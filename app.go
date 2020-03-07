@@ -4,6 +4,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -31,15 +33,41 @@ func init() {
 	_ = prometheus.Register(httpRequestsTotal)
 }
 
-func main() {
+func NewRouter() *gin.Engine{
 	r := gin.Default()
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	api := r.Group("/api")
 	api.Handle(http.MethodGet, "/hello", helloHandler)
 	api.Handle(http.MethodPost, "/hello", helloHandler)
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal(err.Error())
+	return r
+}
+
+func main() {
+	router := NewRouter()
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
 	}
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+
+	go func() {
+		<-quit
+		log.Println("receive interrupt signal")
+		if err := server.Close(); err != nil {
+			log.Fatal("Server Close:", err)
+		}
+	}()
+
+	if err := server.ListenAndServe(); err != nil {
+		if err == http.ErrServerClosed {
+			log.Println("Server closed under request")
+		} else {
+			log.Fatal("Server closed unexpect")
+		}
+	}
+
+	log.Println("Server exiting")
 }
 
 func getSecret(c string) string {
