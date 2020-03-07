@@ -1,0 +1,66 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: git-go-example-app
+spec:
+  type: git
+  params:
+  - name: revision
+    value: master
+  - name: url
+    value: https://github.com/kuops/go-example-app.git
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: go-example-app-lint
+spec:
+  resources:
+    inputs:
+    - name: workspace
+      type: git
+      targetPath: go/src/github.com/kuops/go-example-app.git
+  steps:
+  - name: lint
+    image: golangci/golangci-lint
+    env:
+    - name: GOPATH
+      value: /workspace/go
+    - name: GOPROXY
+      value: "https://goproxy.io,https://goproxy.cn,direct"
+    workingDir: /workspace/go/src/github.com/kuops/go-example-app.git
+    command:
+    - golangci-lint
+    args:
+    - "run"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: go-example-app-pipeline
+spec:
+  resources:
+  - name: source-repo
+    type: git
+  tasks:
+  - name: lint
+    taskRef:
+      name: go-example-app-lint
+    resources:
+      inputs:
+      - name: workspace
+        resource: source-repo
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: go-example-app-pipelinerun
+spec:
+  pipelineRef:
+    name: go-example-app-pipeline
+  serviceAccountName: 'default'
+  resources:
+  - name: source-repo
+    resourceRef:
+      name: git-go-example-app

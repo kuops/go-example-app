@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: go-example-app-
+spec:
+  entrypoint: go-app-ci
+  arguments:
+    parameters:
+    - name: revision
+      value: master
+  templates:
+  - name: go-app-ci
+    steps:
+    - - name: lint
+        template: lint
+  - name: lint
+    inputs:
+      artifacts:
+      - name: code
+        path: /go/src/github.com/kuops/go-example-app
+        git:
+          repo: https://github.com/kuops/go-example-app.git
+          revision: "{{workflow.parameters.revision}}"
+    container:
+      image: golangci/golangci-lint
+      command: [sh, -c]
+      args: ["golang-ci -v run"]
+      env:
+      - name: GOPATH
+        value: "/go"
+      - name: GOPROXY
+        value: "https://goproxy.io,https://goproxy.cn,direct"
+      workingDir: /go/src/github.com/kuops/go-example-app

@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -36,7 +37,9 @@ func main() {
 	api := r.Group("/api")
 	api.Handle(http.MethodGet, "/hello", helloHandler)
 	api.Handle(http.MethodPost, "/hello", helloHandler)
-	r.Run(":8080")
+	if err := r.Run(":8080"); err != nil {
+		log.Fatal(err.Error())
+	}
 }
 
 func getSecret(c string) string {
@@ -44,7 +47,7 @@ func getSecret(c string) string {
 	secret := secret{}
 	secretconfig, err := ioutil.ReadFile(c)
 	if err != nil {
-		log.Fatalf("readfile %s error: %v",c,err)
+		log.Fatalf("readfile %s error: %v", c, err)
 		return ""
 	}
 	err = yaml.Unmarshal(secretconfig, &secret)
