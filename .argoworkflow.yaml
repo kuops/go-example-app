@@ -8,26 +8,103 @@ spec:
     parameters:
     - name: revision
       value: master
+    - name: code-path
+      value: /go/src/github.com/kuops/go-example-app
+  volumes:
+  - name: regcred
+    secret:
+      secretName: regcred
   templates:
   - name: go-app-ci
     steps:
     - - name: lint
         template: lint
+    - - name: unit-test
+        template: unit-test
+      - name: build-bin
+        template: build-bin
+    - - name: build-image
+        template: build-image
+        arguments:
+          artifacts:
+          - name: release
+            from: "{{steps.build-bin.outputs.artifacts.release}}"
   - name: lint
     inputs:
       artifacts:
       - name: code
-        path: /go/src/github.com/kuops/go-example-app
+        path: "{{workflow.parameters.code-path}}"
         git:
           repo: https://github.com/kuops/go-example-app.git
           revision: "{{workflow.parameters.revision}}"
     container:
       image: golangci/golangci-lint
       command: [sh, -c]
-      args: ["golang-ci -v run"]
+      args: ["golangci-lint -v run"]
       env:
       - name: GOPATH
         value: "/go"
       - name: GOPROXY
         value: "https://goproxy.io,https://goproxy.cn,direct"
-      workingDir: /go/src/github.com/kuops/go-example-app
+      workingDir: "{{workflow.parameters.code-path}}"
+  - name: unit-test
+    inputs:
+      artifacts:
+      - name: code
+        path: "{{workflow.parameters.code-path}}"
+        git:
+          repo: https://github.com/kuops/go-example-app.git
+          revision: "{{workflow.parameters.revision}}"
+    container:
+      image: golang
+      command: [sh, -c]
+      args: ["go test"]
+      env:
+      - name: GOPATH
+        value: "/go"
+      - name: GOPROXY
+        value: "https://goproxy.io,https://goproxy.cn,direct"
+      workingDir: "{{workflow.parameters.code-path}}"
+  - name: build-bin
+    inputs:
+      artifacts:
+      - name: code
+        path: "{{workflow.parameters.code-path}}"
+        git:
+          repo: https://github.com/kuops/go-example-app.git
+          revision: "{{workflow.parameters.revision}}"
+    container:
+      image: golang
+      command: [sh, -c]
+      args: ["
+        mkdir build
+        go build -o build/app .
+      "]
+      env:
+      - name: GOPATH
+        value: "/go"
+      - name: GOPROXY
+        value: "https://goproxy.io,https://goproxy.cn,direct"
+      workingDir: "{{workflow.parameters.code-path}}"
+    outputs:
+      artifacts:
+      - name: release
+        path: "{{workflow.parameters.code-path}}/build"
+  - name: build-image
+    inputs:
+      artifacts:
+    container:
+      image: gcr.azk8s.cn/kaniko-project/executor:latest
+      command: ["/kaniko/executor"]
+      args: ["--dockerfile={{ workflow.parameters.code-path }}/Dockerfile",
+             "--context=dir://{{workflow.parameters.code-path}}",
+             "--destination=kuops/go-example-app:{{workflow.parameters.revision}}"]
+      env:
+      - name: GOPATH
+        value: "/go"
+      - name: GOPROXY
+        value: "https://goproxy.io,https://goproxy.cn,direct"
+      workingDir: "{{workflow.parameters.code-path}}"
+      volumeMounts:
+      - name: regcred
+        mountPath: /kaniko/.docker
