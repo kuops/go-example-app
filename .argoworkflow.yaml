@@ -77,7 +77,7 @@ spec:
       image: golang
       command: [sh, -c]
       args: ["
-        mkdir build
+        mkdir build;
         go build -o build/app .
       "]
       env:
@@ -93,10 +93,13 @@ spec:
   - name: build-image
     inputs:
       artifacts:
+      artifacts:
+      - name: release
+        path: "{{workflow.parameters.code-path}}"
     container:
       image: gcr.azk8s.cn/kaniko-project/executor:latest
       command: ["/kaniko/executor"]
-      args: ["--dockerfile={{ workflow.parameters.code-path }}/Dockerfile",
+      args: ["--dockerfile={{workflow.parameters.code-path}}/Dockerfile",
              "--context=dir://{{workflow.parameters.code-path}}",
              "--destination=kuops/go-example-app:{{workflow.parameters.revision}}"]
       env:
