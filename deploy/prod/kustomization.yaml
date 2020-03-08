@@ -1,6 +1,7 @@
 resources:
 - ../base
 namePrefix: prod-
+namespace: prod
 secretGenerator:
 - name: go-example-app-config
   files:
