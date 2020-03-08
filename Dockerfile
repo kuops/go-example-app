@@ -1,4 +1,5 @@
 FROM centos:7
 
-COPY build/app /app
-CMD ["/app"]
+WORKDIR /app
+COPY build/app /app/server
+CMD ["/server"]

@@ -1,0 +1,5 @@
+resources:
+- dev
+- stag
+- prod
+namePrefix: cluster-a

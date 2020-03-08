@@ -1,0 +1,10 @@
+resources:
+- ../base
+namePrefix: dev-
+secretGenerator:
+- name: go-example-app-config
+  kvSources:
+  - pluginType: builtin
+    name: files
+    args:
+    - secret.yaml
