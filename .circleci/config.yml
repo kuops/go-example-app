@@ -5,7 +5,7 @@ jobs:
       - image: golangci/golangci-lint
     steps:
       - checkout
-      - run: golangci-lint
+      - run: golangci-lint run
   build:
     docker:
       - image: circleci/golang:1.12
