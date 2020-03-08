@@ -33,7 +33,8 @@ func init() {
 	_ = prometheus.Register(httpRequestsTotal)
 }
 
-func NewRouter() *gin.Engine{
+// NewRouter create an *gin.Engine
+func NewRouter() *gin.Engine {
 	r := gin.Default()
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	api := r.Group("/api")
