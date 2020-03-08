@@ -1,13 +1,4 @@
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: go-example-app-config
-type: Opaque
-data:
-  secret.yaml: |-
-    secret: YmFzZQo=
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
