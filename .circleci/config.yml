@@ -6,9 +6,16 @@ jobs:
     steps:
       - checkout
       - run: golangci-lint
-  test:
+  build:
     docker:
       - image: circleci/golang:1.12
     steps:
       - checkout
       - run: go test -v
+      - run: go build 
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - lint
+      - build
