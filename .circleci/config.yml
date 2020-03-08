@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  lint:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/kuops/go-example-app
+    steps:
+      - run: golangci-lint run -v
+  build:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/kuops/go-example-app
+    steps:
+      - checkout
+      - run: go test -v .

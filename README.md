@@ -1,5 +1,8 @@
 # go-example-app
 
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/kuops/go-example-app)](https://goreportcard.com/report/github.com/kuops/go-example-app)
+
 ## build code
 
 ```bash
