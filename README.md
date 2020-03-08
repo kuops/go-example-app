@@ -1,6 +1,7 @@
 # go-example-app
 
 
+![Cirrus CI - Base Branch Build Status](https://img.shields.io/cirrus/github/kuops/go-example-app)
 [![Go Report Card](https://goreportcard.com/badge/github.com/kuops/go-example-app)](https://goreportcard.com/report/github.com/kuops/go-example-app)
 
 ## build code
