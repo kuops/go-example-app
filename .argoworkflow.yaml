@@ -43,12 +43,14 @@ spec:
     container:
       image: golangci/golangci-lint
       command: [sh, -c]
-      args: ["golangci-lint -v run"]
+      args: ["golangci-lint -v run --timeout 2m"]
       env:
       - name: GOPATH
         value: "/go"
       - name: GOPROXY
-        value: "https://goproxy.io,https://goproxy.cn,direct"
+        value: "https://goproxy.cn,direct"
+      - name: GO111MODULE
+        value: "on"
       workingDir: "{{workflow.parameters.code-path}}"
   - name: unit-test
     inputs:
@@ -81,7 +83,6 @@ spec:
       command: [sh, -c]
       args: ["
         mkdir build;
-        go get github.com/jessevdk/go-assets-builder
         go build -o build/app .
         cp -a templates build/
       "]
