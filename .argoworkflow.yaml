@@ -83,7 +83,7 @@ spec:
       command: [sh, -c]
       args: ["
         mkdir build;
-        go build -o build/app .
+        go build -o build/app .;
         cp -a templates build/
       "]
       env:
