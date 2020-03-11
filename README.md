@@ -4,20 +4,13 @@
 ![Circle CI](https://img.shields.io/circleci/build/github/kuops/go-example-app)
 [![Go Report Card](https://goreportcard.com/badge/github.com/kuops/go-example-app)](https://goreportcard.com/report/github.com/kuops/go-example-app)
 
-## build code
+## Description
 
-```bash
-argo submit -n argo .argoworkflow.yaml
-```
+This Application my firtst simple example app , so terrible :sweat_smile:, It's Using:
 
-## build deploy yaml
+- gin
+- gorm
+- bootstrap
+- sqlite
 
-```bash
-kustomize build deploy
-```
-
-## deploy
-
-```bash
-argocd app create go-example-app --repo https://github.com/kuops/go-example-app.git --path deploy --dest-server https://kubernetes.default.svc --dest-namespace default
-```
+I mainly Using demonstration [kubernetes-cicd-tutorials](https://github.com/kuops/kubernetes-ci-cd-tutorial.git)
