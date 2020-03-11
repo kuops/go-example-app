@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  lint:
+    docker:
+      - image: golangci/golangci-lint
+    steps:
+      - checkout
+      - run: golangci-lint run -v
+  build:
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - checkout
+      - run: go test -v
+      - run: mkdir build 
+      - run: go get github.com/jessevdk/go-assets-builder
+      - run: go get github.com/gin-gonic/gin
+      - run: go-assets-builder templates -o assets.go
+      - run: go build -o build/app .
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - lint
+      - build

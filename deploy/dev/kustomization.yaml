@@ -1,0 +1,8 @@
+resources:
+- ../base
+namePrefix: dev-
+namespace: dev
+secretGenerator:
+- name: go-example-app-configs
+  files:
+  - config.yaml
