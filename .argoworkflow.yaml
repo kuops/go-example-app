@@ -82,9 +82,8 @@ spec:
       args: ["
         mkdir build;
         go get github.com/jessevdk/go-assets-builder
-        go get github.com/gin-gonic/gin
-        go-assets-builder templates -o assets.go
         go build -o build/app .
+        cp -a templates build/
       "]
       env:
       - name: GOPATH
