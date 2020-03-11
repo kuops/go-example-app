@@ -16,8 +16,7 @@ func Login(c *gin.Context) {
 	user.Email = c.PostForm("email")
 	user.Password = c.PostForm("password")
 	if err := models.CheckPassword(&user);err == nil {
-		token := utils.TokenGenerator()
-		c.SetCookie("token", token, 3600, "", "", false, true)
+		c.SetCookie("token", user.Email, 3600, "", "", false, true)
 		c.Set("is_logged_in", true)
 		c.Redirect(http.StatusMovedPermanently,"/")
 	} else {

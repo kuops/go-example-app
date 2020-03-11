@@ -9,7 +9,6 @@ import (
 func Home(c *gin.Context){
 	loggedInInterface, _ := c.Get("is_logged_in")
 	environment := config.Environment
-	c.Set("is_logged_in",false)
 	loggedIn := loggedInInterface.(bool)
 	if !loggedIn {
 		c.Redirect(301,"/login")

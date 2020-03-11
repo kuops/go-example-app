@@ -7,8 +7,9 @@ import (
 
 func Render(c *gin.Context, data gin.H, templateName string) {
 	loggedInInterface, _ := c.Get("is_logged_in")
+	loggedInUser,_ := c.Get("logged_in_user")
 	data["is_logged_in"] = loggedInInterface.(bool)
-
+	data["logged_in_user"] = loggedInUser.(string)
 	switch c.Request.Header.Get("Accept") {
 	case "application/json":
 		// Respond with JSON
@@ -20,6 +21,5 @@ func Render(c *gin.Context, data gin.H, templateName string) {
 		// Respond with HTML
 		c.HTML(http.StatusOK, templateName, data)
 	}
-
 }
 
