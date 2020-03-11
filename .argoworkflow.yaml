@@ -16,7 +16,7 @@ spec:
       secretName: regcred
       items:
       - key: .dockerconfigjson
-        path: configs.json
+        path: config.json
   templates:
   - name: go-app-ci
     steps:
@@ -84,7 +84,8 @@ spec:
       args: ["
         mkdir build;
         go build -o build/app .;
-        cp -a templates build/
+        cp -a templates build/;
+        cp Dockerfile build/
       "]
       env:
       - name: GOPATH
@@ -101,20 +102,15 @@ spec:
       artifacts:
       - name: release
         path: "/workspace/build"
-      - name: code
-        path: "{{workflow.parameters.code-path}}"
-        git:
-          repo: https://github.com/kuops/go-example-app.git
-          revision: "{{workflow.parameters.revision}}"
     container:
       image: gcr.azk8s.cn/kaniko-project/executor:latest
-      #image:  centos:7
+      #image: centos:7
+      # command: [sh,-c]
+      # args: ["ls -al /kaniko/.docker/ && ls -al"]
       command: ["/kaniko/executor"]
-      args: ["--dockerfile={{workflow.parameters.code-path}}/Dockerfile",
+      args: ["--dockerfile=/workspace/build/Dockerfile",
              "--context=dir:///workspace",
              "--destination=kuops/go-example-app:{{workflow.parameters.revision}}"]
-      #command: [sh, -c]
-      #args: ["pwd && ls -al && cat {{workflow.parameters.code-path}}/Dockerfile"]
       env:
       - name: GOPATH
         value: "/go"
