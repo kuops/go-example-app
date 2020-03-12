@@ -36,7 +36,7 @@ spec:
       volumes:
       - name: config
         secret:
-          secretName: go-example-app-config
+          secretName: go-example-app-configs
           items:
           - key: config.yaml
             path: config.yaml
