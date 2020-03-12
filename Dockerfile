@@ -1,6 +1,5 @@
-FROM centos:7
+FROM golang
 
-RUN yum -y install gcc
 WORKDIR /app
 COPY build/app /app/server
 COPY build/templates /app/templates
