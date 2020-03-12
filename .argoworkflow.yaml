@@ -82,9 +82,10 @@ spec:
       image: golang
       command: [sh, -c]
       args: ["
-        mkdir build;
+        mkdir -p build/database;
         go build -o build/app .;
         cp -a templates build/;
+        cp -a  database/example.db build/database;
         cp Dockerfile build/"]
       env:
       - name: GOPATH
