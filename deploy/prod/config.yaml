@@ -1,3 +1,3 @@
 port: 8080
 database: database/example.db
-environment: dev
+environment: prod
