@@ -85,13 +85,16 @@ spec:
         mkdir build;
         go build -o build/app .;
         cp -a templates build/;
-        cp Dockerfile build/
-      "]
+        cp Dockerfile build/"]
       env:
       - name: GOPATH
         value: "/go"
       - name: GOPROXY
         value: "https://goproxy.io,https://goproxy.cn,direct"
+      - name: CGO_ENABLED
+        value: 0
+      - name:  GOOS
+        value: linux 
       workingDir: "{{workflow.parameters.code-path}}"
     outputs:
       artifacts:
