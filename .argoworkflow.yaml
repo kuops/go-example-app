@@ -93,7 +93,7 @@ spec:
       - name: GOPROXY
         value: "https://goproxy.io,https://goproxy.cn,direct"
       - name: CGO_ENABLED
-        value: 0
+        value: 1
       - name:  GOOS
         value: linux 
       workingDir: "{{workflow.parameters.code-path}}"
